@@ -164,7 +164,7 @@ jobs:
           when: on_fail
           command: |
             aws cloudformation describe-stack-events --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
-          ##  exit 1
+          #  exit 1
       - persist_to_workspace:
           root: ~/
           paths:

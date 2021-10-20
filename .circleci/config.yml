@@ -161,6 +161,7 @@ jobs:
           #  exit 1
       - run:
           name: events log
+          when: on_fail
           command: |
             aws cloudformation describe-stack-events --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
           #  exit 1

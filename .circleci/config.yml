@@ -133,7 +133,22 @@ jobs:
     steps:
       - checkout
       - run: yum install -y tar gzip
-
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+              --tags project=udapeople 
+          #   exit 1
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople" \
+              --output text >> ./.circleci/ansible/inventory
           #  exit 1
     #  - run:
      #     name: catch events log upon failures
@@ -161,23 +176,20 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt-get update -y
-            sudo apt-get install -y tar
-            sudo apt-get install -y gzip
-            sudo apt-get install unzip awscli -y
             apk add --update ansible
       - run:
           name: Configure server
           command: |
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment
       # Here's where you will add some code to rollback on failure      
 
 workflows:
   default:
     jobs:
       - deploy-infrastructure
-   #   - configure-infrastructure:
-    #      requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       
       

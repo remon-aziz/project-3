@@ -221,9 +221,18 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: Run migrations
+          name: Install AWS CLI dependencies
+          working_directory: /tmp
           command: |
-            cd backend
+            sudo apt-get update && sudo apt-get install -yy less
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+      - run:
+          name: Run migrations
+           working_directory: ./backend
+          command: |
+            pwd
             npm install
             npm run migrations > migrations_dump.txt
          #   Run and sve the migration output

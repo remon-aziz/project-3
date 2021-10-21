@@ -215,7 +215,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: amazon/aws-cli
+      - image: circleci/node:13.8.0
    #   - image: circleci/node:13.8.0
     steps:
       - checkout
@@ -277,11 +277,11 @@ jobs:
 workflows:
   default:
     jobs:
-      - deploy-infrastructure
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]      
+     # - deploy-infrastructure
+      #- configure-infrastructure:
+       #   requires: [deploy-infrastructure]
+      - run-migrations
+     #     requires: [configure-infrastructure]
+      #- deploy-frontend:
+       #   requires: [run-migrations]      
       

@@ -73,6 +73,11 @@ jobs:
       - save_cache:
           paths: [backend/node_modules] # path to save the files 
           key: backend-build
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/backend/node_modules
+            - project/*
 
   test-frontend:
     docker:
@@ -219,9 +224,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/
-      - restore_cache:
-          keys: [backend-build]  
+          at: ~/ 
       - run:
           name: Run migrations
           command: |
@@ -282,9 +285,6 @@ workflows:
   default:
     jobs:
       - build-backend
-      - deploy-infrastructure
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
       - run-migrations:
-          requires: [configure-infrastructure]
+          requires: [build-backend]
       

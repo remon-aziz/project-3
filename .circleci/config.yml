@@ -131,7 +131,6 @@ jobs:
           paths: [frontend/node_modules] # path to save the files 
           key: frontend-scan 
 
-
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -222,9 +221,7 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - checkout
-      - attach_workspace:
-          at: ~/ 
+      - checkout 
       - run:
           name: Run migrations
           command: |
@@ -233,6 +230,8 @@ jobs:
             pwd
             npm install
             if [ $? -eq 0 ]; then echo "el install 3da"; fi
+            npm run build
+            if [ $? -eq 0 ]; then echo "el Build 3da"; fi
             npm run migrations > migrations_dump.txt
          #   Run and sve the migration output
       - run:
@@ -284,7 +283,5 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-backend
-      - run-migrations:
-          requires: [build-backend]
+      - run-migrations
       

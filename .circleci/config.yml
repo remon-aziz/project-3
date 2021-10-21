@@ -159,19 +159,43 @@ jobs:
               --filters "Name=tag:project,Values=udapeople" \
               --output text >> ./.circleci/ansible/inventory
           #  exit 1
-      - run:
-          name: events log upon failures
-          when: on_fail
-          command: |
-            aws cloudformation describe-stack-events --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+    #  - run:
+     #     name: catch events log upon failures
+      #    when: on_fail
+       #   command: |
+        #    aws cloudformation describe-stack-events --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
           #  exit 1
       - persist_to_workspace:
           root: ~/
           paths:
             - project-3/.circleci/ansible/inventory.txt
-     # - destroy-environment
+      - destroy-environment
 
       # Here's where you will add some code to rollback on failure
+
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["da:59:75:2c:0b:64:8d:da:99:ca:b5:aa:57:f4:80:69"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update -y
+            sudo apt-get install -y tar
+            sudo apt-get install -y gzip
+            sudo apt-get install unzip awscli -y
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
+      # Here's where you will add some code to rollback on failure      
 
 workflows:
   default:

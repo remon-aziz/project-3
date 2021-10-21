@@ -230,7 +230,7 @@ jobs:
             sudo ./aws/install
       - run:
           name: Run migrations
-           working_directory: ./backend
+          working_directory: ./backend
           command: |
             pwd
             npm install

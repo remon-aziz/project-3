@@ -340,8 +340,7 @@ workflows:
        #   requires:
         #    - test_frontend
       - deploy_backend_infrastructure
-          requires:
-            - build_backend
+          requires: [build_backend]
         #    - analyze_frontend
          # filters:
           #  branches:

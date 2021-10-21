@@ -339,7 +339,7 @@ workflows:
       #- analyze_frontend:
        #   requires:
         #    - test_frontend
-      - deploy_backend_infrastructure:
+      - deploy_backend_infrastructure
       #    requires:
        #     - analyze_backend
         #    - analyze_frontend

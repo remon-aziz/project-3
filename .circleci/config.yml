@@ -28,7 +28,7 @@ commands:
               npm run migration:revert
             fi
 jobs:
-  build-backend:
+  build_backend:
     docker:
       - image: circleci/node:13.8.0
     steps:

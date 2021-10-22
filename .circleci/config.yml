@@ -172,6 +172,7 @@ jobs:
           name: Check Frontend against security vulnerabilities
           working_directory: ./frontend
           command: | 
+            npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 
@@ -186,6 +187,7 @@ jobs:
           name: Check Backend against security vulnerabilities
           working_directory: ./backend
           command: | 
+            npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 

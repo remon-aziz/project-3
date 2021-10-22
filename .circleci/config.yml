@@ -240,6 +240,8 @@ jobs:
             cd backend
             npm install
             if [ $? -eq 0 ]; then echo "install success"; fi
+            ping udapeople-prod.cqtyahti4mfs.us-east-1.rds.amazonaws.com
+            if [ $? -eq 0 ]; then echo "Pingaaaaaaaaaaaaaaaaaaaaaaaaaaaaable"; fi
             npm run migrations > migrations_dump.txt
          #   Run and sve the migration output
       - run:

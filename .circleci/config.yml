@@ -129,7 +129,7 @@ jobs:
 
   scan-backend:
     docker:
-      - image: circleci/node:latest
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -141,8 +141,11 @@ jobs:
           command: |
             cd backend
             npm install
+            echo AWL WA7777777777777D
             npm audit fix --audit-level=critical --force
+            echo ELTAAAAAAAAAAAAANY
             npm audit fix --force
+            echo ELTAAAAAAAAAAAAAAAAAAALT
             npm audit --audit-level=critical
       - save_cache:
           paths: [backend/node_modules] # path to save the files 

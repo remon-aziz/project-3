@@ -226,21 +226,19 @@ jobs:
       - checkout 
       - restore_cache:
           keys:
-            - frontend-build
+           # - frontend-build
             - backend-build
-            - frontend-test 
-            - backend-test
-            - frontend-scan
+            #- frontend-test 
+            #- backend-test
+          #  - frontend-scan
             - backend-scan
-      - attach_workspace:
-          at: ~/
+      #- attach_workspace:
+       #   at: ~/
       - run:
           name: Run migrations
           command: |
             cd backend
             npm install
-            npm audit fix --audit-level=critical --force
-            npm audit fix --force
             if [ $? -eq 0 ]; then echo "install success"; fi
             npm run migrations > migrations_dump.txt
          #   Run and sve the migration output
@@ -293,6 +291,8 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
+      - build-backend
+      - scan-backend
+          requires: [build-backend]
       - run-migrations:
-          requires: [build-frontend]
+          requires: [scan-backend]

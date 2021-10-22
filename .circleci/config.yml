@@ -129,11 +129,13 @@ jobs:
 
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:latest
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys:
+            - backend-build
+            - backend-scan
       - run: 
           name: Run backend scan
           command: |

@@ -292,7 +292,7 @@ workflows:
   default:
     jobs:
       - build-backend
-      - scan-backend
+      - scan-backend:
           requires: [build-backend]
       - run-migrations:
           requires: [scan-backend]

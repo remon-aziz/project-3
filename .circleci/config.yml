@@ -213,6 +213,7 @@ jobs:
           name: Run migrations
           command: |
             pwd
+            ls -l
             cd backend
             pwd
             cat .env

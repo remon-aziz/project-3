@@ -75,6 +75,10 @@ jobs:
       - save_cache:
           paths: [backend/node_modules] # path to save the files 
           key: backend-build
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/backend/node_modules
 
   test-frontend:
     docker:
@@ -229,6 +233,8 @@ jobs:
           keys:
             - backend-build
             - backend-scan
+      - attach_workspace:
+          at: ~/
       - run:
           name: Run migrations
           command: |

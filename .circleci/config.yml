@@ -251,8 +251,8 @@ jobs:
             if [ $? -eq 0 ]; then echo "install success"; fi
             npm run build
             cat .env
-            npm run migrations > migrations_dump.txt
-            cat migrations_dump.txt
+            sudo npm run migrations > migration.log
+            cat migration.log
          #   Run and sve the migration output
       - run:
           name: Send migration results to memstash

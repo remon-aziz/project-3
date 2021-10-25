@@ -238,6 +238,7 @@ jobs:
             npm install
             if [ $? -eq 0 ]; then echo "install success"; fi
             npm run migrations > migrations_dump.txt
+            cat migrations_dump.txt
          #   Run and sve the migration output
       - run:
           name: Send migration results to memstash
@@ -421,13 +422,4 @@ destroy:
 workflows:
   default:
     jobs:
-      - deploy-infrastructure:
-          filters:
-            branches:
-              only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
+      - run-migrations

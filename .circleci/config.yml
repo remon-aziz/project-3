@@ -229,8 +229,6 @@ jobs:
           keys:
             - backend-build
             - backend-scan
-      - attach_workspace:
-          at: ~/
       - run:
           name: Run migrations
           command: |
@@ -424,4 +422,5 @@ destroy:
 workflows:
   default:
     jobs:
+      - build-backend
       - run-migrations

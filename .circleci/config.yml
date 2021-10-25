@@ -72,9 +72,6 @@ jobs:
             npm install
             npm run build
            # exit 1
-      - save_cache:
-          paths: [backend/node_modules] # path to save the files 
-          key: backend-build
       - persist_to_workspace:
           root: ~/
           paths:
@@ -228,11 +225,7 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - checkout 
-      - restore_cache:
-          keys:
-            - backend-build
-            - backend-scan
+      - checkout
       - attach_workspace:
           at: ~/
       - run:

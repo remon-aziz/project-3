@@ -113,28 +113,19 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build]
       - run: 
           name: Run frontend scan
           command: |
             cd frontend
             npm install
             npm audit fix --audit-level=critical --force
-            npm audit --audit-level=critical
-      - save_cache:
-          paths: [frontend/node_modules] # path to save the files 
-          key: frontend-scan 
+            npm audit --audit-level=critical 
 
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - backend-build
-            - backend-scan
       - run: 
           name: Run backend scan
           command: |
@@ -225,7 +216,7 @@ jobs:
             npm install
             if [ $? -eq 0 ]; then echo "install success"; fi
             npm run build
-            echo "\nStarting Migratiiiiiiiiiiiiiion\n"
+            echo -n "\nStarting Migratiiiiiiiiiiiiiion\n"
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
          #   Run and sve the migration output

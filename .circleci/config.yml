@@ -238,8 +238,6 @@ jobs:
             npm install
             if [ $? -eq 0 ]; then echo "install success"; fi
             npm run build
-            npm audit fix --audit-level=critical --force
-            npm audit fix --force
             echo "\nStarting Migratiiiiiiiiiiiiiion\n"
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt

@@ -45,8 +45,6 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build]
       - run:
           name: Build front-end
           command: |
@@ -54,17 +52,16 @@ jobs:
             npm install
             npm run build
            # exit 1
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/frontend/node_modules
 
   build-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
       - run:
           name: Back-end build
           command: |
@@ -146,9 +143,6 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --force
             npm audit --audit-level=critical
-      - save_cache:
-          paths: [backend/node_modules] # path to save the files 
-          key: backend-scan
 
   deploy-infrastructure:
     docker:
@@ -192,7 +186,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/*
+            - project/.circleci/ansible/inventory.txt
       - destroy-environment
       # Here's where you will add some code to rollback on failure
 
@@ -214,10 +208,6 @@ jobs:
           command: |
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/*
       - destroy-environment
       # Here's where you will add some code to rollback on failure      
 
@@ -421,6 +411,22 @@ destroy:
 workflows:
   default:
     jobs:
+      - build-frontend
       - build-backend
-      - run-migrations:
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
           requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]

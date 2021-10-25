@@ -212,7 +212,9 @@ jobs:
       - run:
           name: Run migrations
           command: |
+            pwd
             cd backend
+            pwd
             cat .env
             npm install
             if [ $? -eq 0 ]; then echo "install success"; fi

@@ -29,8 +29,8 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl -H "token: 8e0646c2-42b4-4733-80b0-823ba04e351e" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            echo $SUCCESS
+            SUCCESS=$(curl -H "token: f991b49d-0710-4c1a-bfe2-9c0e01464d95" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            echo "memstach value is $SUCCESS" 
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
@@ -245,7 +245,7 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               echo "DB migrated successfully"
-              curl -H "Content-Type: text/plain" -H "token: 8e0646c2-42b4-4733-80b0-823ba04e351e" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+              curl -H "Content-Type: text/plain" -H "token: f991b49d-0710-4c1a-bfe2-9c0e01464d95" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
             fi
             echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy-environment
@@ -261,12 +261,12 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt-get update -y
-            apt-get install -y tar
-            apt-get install -y gzip
-            apt-get install unzip awscli -y
-            apt-get install -y python3
-            apk add --update ansible
+            sudo apt-get update -y
+            sudo apt-get install -y tar
+            sudo apt-get install -y gzip
+            sudo apt-get install unzip awscli -y
+            sudo apt-get install -y python3
+            sudo apk add --update ansible
       - run:
           name: Get backend url
           command: |

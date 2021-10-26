@@ -238,8 +238,8 @@ jobs:
             npm install
             npm run build
             npm run migrations:revert
-          #  npm run migrations > migration.log
-          #  cat migration.log
+            npm run migrations > migration.log
+            cat migration.log
          #   Run and sve the migration output
       - run:
           name: Send migration results to memstash
@@ -419,25 +419,32 @@ jobs:
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
 
-  revert-migrations2:
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - run:
-          name: Revert migrations
-          command: |
-            SUCCESS=$(curl -H "token: 77d90de8-5325-470c-a73e-fd4c44d533df" --request GET https://api.memstash.io/values/migration_a97d5a4)
-            echo $SUCCESS
-            if(( $SUCCESS==1 )); 
-            then
-              cd ~/project/backend
-              npm install
-              npm run migrations:revert
-              echo "Migration reverted"
-            fi
 
 workflows:
   default:
     jobs:
-      - run-migrations
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [test-feature-branch]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]

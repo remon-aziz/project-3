@@ -238,8 +238,8 @@ jobs:
             npm install
             npm run build
             npm run migrations:revert
-            npm run migrations > migration.log
-            cat migration.log
+          #  npm run migrations > migration.log
+          #  cat migration.log
          #   Run and sve the migration output
       - run:
           name: Send migration results to memstash
@@ -440,4 +440,4 @@ jobs:
 workflows:
   default:
     jobs:
-      - revert-migrations2
+      - run-migrations

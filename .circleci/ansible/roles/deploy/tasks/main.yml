@@ -2,11 +2,11 @@
 - name: "Copy archived backend files to the new server."
   copy:
     src: ~/project/artifact.tar.gz
-    dest: ~/home/ubuntu
+    dest: ~/
 
 - name: "Extract Files and starting the app"
   shell: |
-    cd ~/home/ubuntu
+    cd ~/
     tar -xzvf artifact.tar.gz -C backend
     rm artifact.tar.gz
     cd backend/

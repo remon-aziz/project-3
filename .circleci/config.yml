@@ -32,7 +32,7 @@ commands:
           name: Revert migrations
           when: << parameters.when >>
           command: |
-            SUCCESS=$(curl -H "token: 77d90de8-5325-470c-a73e-fd4c44d533df" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}`)
+            SUCCESS=$(curl -H "token: 77d90de8-5325-470c-a73e-fd4c44d533df" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
             echo $SUCCESS
             if(( $SUCCESS==1 )); 
             then
@@ -239,6 +239,7 @@ jobs:
             cd backend
             npm install
             npm run build
+            npm run migrations:revert
             npm run migrations > migration.log
             cat migration.log
          #   Run and sve the migration output
@@ -262,8 +263,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -271,6 +270,8 @@ jobs:
             apt-get install -y tar
             apt-get install -y gzip
             apt-get install unzip awscli -y
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
@@ -302,10 +303,12 @@ jobs:
           fingerprints: ["da:59:75:2c:0b:64:8d:da:99:ca:b5:aa:57:f4:80:69"]
       - attach_workspace:
           at: ~/
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible curl nodejs npm
+            apk add --update tar gzip ansible nodejs npm curl openssh-client
             pip install awscli
           #   check if more dependencies needed
       - run:
@@ -315,14 +318,15 @@ jobs:
             npm i
             npm run build
             cd ..
-            # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml 
-      - destroy-environment
-      - revert-migrations
+      - destroy-environment:
+          when: on_fail
+      - revert-migrations:
+          when: on_fail
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:

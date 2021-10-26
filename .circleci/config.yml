@@ -344,15 +344,15 @@ jobs:
           name: Get backend url
           command: |
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
+            echo "API_URL=${API_URL}"
       - run:
           name: Backend smoke test.
           command: |
             if curl "${API_URL}/api/status" | grep "ok"
             then
-                return 0
-            else
                 return 1
+            else
+                return 0
             fi
       - run:
           name: Frontend smoke test.
@@ -365,8 +365,10 @@ jobs:
             else
               return 1
             fi
-      - destroy-environment
-      - revert-migrations            
+      - destroy-environment:
+          when: on_fail
+      - revert-migrations:
+          when: on_fail            
       # Here's where you will add some code to rollback on failure  
 
   cloudfront-update:
@@ -422,4 +424,4 @@ jobs:
 workflows:
   default:
     jobs:
-      - deploy-backend
+      - smoke-test

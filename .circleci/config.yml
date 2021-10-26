@@ -251,7 +251,7 @@ jobs:
             if [ $? -eq 0 ]; then echo "install success"; fi
             npm run build
             cat .env
-            sudo npm run migrations > migration.log
+            npm run migrations > migration.log
             cat migration.log
          #   Run and sve the migration output
       - run:

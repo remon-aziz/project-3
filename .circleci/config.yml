@@ -440,4 +440,4 @@ jobs:
 workflows:
   default:
     jobs:
-      revert-migrations2
+      - revert-migrations2

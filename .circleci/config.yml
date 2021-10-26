@@ -254,13 +254,11 @@ jobs:
             npm run build
             npm run migrations > migration.log
             cat migration.log
-            npm run migrations:revert > migration_dumb.txt
-            cat migration_dumb.txt
          #   Run and sve the migration output
       - run:
           name: Send migration results to memstash
           command: |
-            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." ~/project/backend/migration.log
             then
               echo "DB migrated successfully"
               curl -H "Content-Type: text/plain" -H "token: 77d90de8-5325-470c-a73e-fd4c44d533df" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}

@@ -30,7 +30,7 @@ commands:
           name: Revert migrations
           when: << parameters.when >>
           command: |
-            SUCCESS=$(curl -H "token: 77d90de8-5325-470c-a73e-fd4c44d533df" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            SUCCESS=$(curl -H "token: 77d90de8-5325-470c-a73e-fd4c44d533df" --request GET https://api.memstash.io/values/migration_5efd251)
             echo $SUCCESS
             if(( $SUCCESS==1 ));
             then

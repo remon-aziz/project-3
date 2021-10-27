@@ -178,7 +178,7 @@ jobs:
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:project,Values=udapeople" \
-              --output text >> ~/project/.circleci/ansible/inventory.txt
+              --output text | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'>> ~/project/.circleci/ansible/inventory.txt
          # For troubleshooting   cat ~/project/.circleci/ansible/inventory.txt
           #  exit 1
     #  - run:
@@ -271,7 +271,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project,Values=udapeople")
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project,Values=udapeople" | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}')
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -364,10 +364,10 @@ jobs:
             else
               return 1
             fi
-     # - destroy-environment:
-      #    when: on_fail
-      #- revert-migrations:
-       #   when: on_fail            
+      - destroy-environment:
+          when: on_fail
+      - revert-migrations:
+          when: on_fail            
       # Here's where you will add some code to rollback on failure  
 
   cloudfront-update:

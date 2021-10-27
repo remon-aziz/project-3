@@ -32,7 +32,7 @@ commands:
           command: |
             SUCCESS=$(curl -H "token: 77d90de8-5325-470c-a73e-fd4c44d533df" --request GET https://api.memstash.io/values/migration_5efd251)
             echo $SUCCESS
-            if $SUCCESS -eq 1 ;
+            if [[ $SUCCESS -eq 1 ]] ;
             then
               cd ~/project/backend
               npm install

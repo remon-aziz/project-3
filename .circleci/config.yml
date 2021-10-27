@@ -30,7 +30,7 @@ commands:
           name: Revert migrations
           when: << parameters.when >>
           command: |
-            SUCCESS=$(curl -H "token: 77d90de8-5325-470c-a73e-fd4c44d533df" --request GET https://api.memstash.io/values/migration_5efd251)
+            SUCCESS=$(curl -H "token: 77d90de8-5325-470c-a73e-fd4c44d533df" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
             echo $SUCCESS
             if [[ $SUCCESS -eq 1 ]] ;
             then
@@ -341,9 +341,9 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project,Values=udapeople")
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project,Values=udapeople" | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}')
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL=${API_URL}"
+            echo API_URL=${API_URL}
       - run:
           name: Backend smoke test.
           command: |
@@ -390,8 +390,10 @@ jobs:
                     --stack-name InitialStack \
                     --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
                     --tags project=udapeople
-      - destroy-environment
-      - revert-migrations
+      - destroy-environment:
+          when: on_fail
+      - revert-migrations:
+          when: on_fail
       # Here's where you will add some code to rollback on failure  
 
   cleanup:
@@ -424,4 +426,17 @@ jobs:
 workflows:
   default:
     jobs:
-      - smoke-test
+      - deploy-infrastructure:
+          filters:
+            branches:
+              only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]

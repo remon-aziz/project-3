@@ -364,10 +364,10 @@ jobs:
             else
               return 1
             fi
-      - destroy-environment:
-          when: on_fail
-      - revert-migrations:
-          when: on_fail            
+     # - destroy-environment:
+      #    when: on_fail
+      #- revert-migrations:
+       #   when: on_fail            
       # Here's where you will add some code to rollback on failure  
 
   cloudfront-update:

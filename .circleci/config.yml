@@ -355,7 +355,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            echo el Link aho >> ${API_URL}/api/status
+            echo el Link aho:  ${API_URL}/api/status
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0

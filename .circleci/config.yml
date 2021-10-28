@@ -443,5 +443,6 @@ workflows:
           filters:
             branches:
               only: [master]
-      - cleanup
+      - cleanup:
+          requires: [deploy-infrastructure]
           

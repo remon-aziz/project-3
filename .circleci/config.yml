@@ -162,6 +162,8 @@ jobs:
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople 
+
+            echo CIRCLE_WORKFLOW_ID = ${CIRCLE_WORKFLOW_ID:0:7}
           #   exit 1
       - run:
           name: Ensure front-end infrastructure exist
@@ -292,7 +294,6 @@ jobs:
           when: on_fail
       # Here's where you will add some code to rollback on failure  
 
-
   deploy-backend:
     docker:
       - image: python:3.7-alpine3.11
@@ -332,7 +333,6 @@ jobs:
       #- revert-migrations:
        #   when: on_fail
       # Here's where you will add some code to rollback on failure  
-
 
   smoke-test:
     docker:
@@ -443,6 +443,6 @@ workflows:
           filters:
             branches:
               only: [master]
-      - cleanup:
-          requires: [deploy-infrastructure]
+     # - cleanup:
+      #    requires: [deploy-infrastructure]
           

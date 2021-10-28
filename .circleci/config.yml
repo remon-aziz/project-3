@@ -326,10 +326,10 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml 
-      - destroy-environment:
-          when: on_fail
-      - revert-migrations:
-          when: on_fail
+      #- destroy-environment:
+       #   when: on_fail
+      #- revert-migrations:
+       #   when: on_fail
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:

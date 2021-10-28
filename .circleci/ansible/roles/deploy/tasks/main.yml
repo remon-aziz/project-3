@@ -1,13 +1,13 @@
 ---
 - name: "Copy backend files to the new server."
   copy:
-    src: ~/project/backend
+    src: ~/project/artifact.tar.gz
     dest: ~/project
 
 - name: "Extract Files and starting the app"
   shell: |
     cd ~/project
-    tar -xzvf artifact.tar.gz -C backend
+    tar -xzvf backend_artifact.tar.gz -C backend
     cd backend/
     npm install
     pm2 stop default

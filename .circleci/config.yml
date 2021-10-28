@@ -444,5 +444,5 @@ workflows:
             branches:
               only: [master]
       - cleanup:
-          requires: [cloudfront-update]
+          requires: [deploy-infrastructure]
           

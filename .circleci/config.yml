@@ -443,6 +443,8 @@ workflows:
           filters:
             branches:
               only: [master]
+      - cloudfront-update:
+          requires: [deploy-infrastructure]
      # - cleanup:
-      #    requires: [deploy-infrastructure]
+      #    requires: [cloudfront-update]
           
